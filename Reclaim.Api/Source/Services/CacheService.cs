@@ -11,8 +11,6 @@ using System.Runtime.Caching;
 using System.Text;
 
 namespace Reclaim.Api.Services;
-string userInput = question;
-List<ChatExchange> conversationHistory = new List<ChatExchange>();
 public class CacheService
 {
     private readonly DatabaseContext _db;
@@ -129,13 +127,6 @@ public class CacheService
         return loaded;
     }
 
- private readonly OpenAiClient _openAiClient;
-
-public ChatService(OpenAiClient openAiClient)
-{
-    _openAiClient = openAiClient;
-}
-   
     private async Task<T> GetFromDatabase<T>(string fullKey)
     {
         var item = await _distributedCache.GetAsync(fullKey);
