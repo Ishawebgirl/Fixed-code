@@ -1,4 +1,6 @@
-﻿using Azure;
+﻿// Enhanced RAG Chatbot with improved validation and bounding box handling
+// Last updated: 2024-02-15
+using Azure;
 using Azure.AI.DocumentIntelligence;
 using Azure.AI.OpenAI;
 using Azure.Search.Documents;
