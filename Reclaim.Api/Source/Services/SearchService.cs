@@ -25,18 +25,32 @@ public class SearchService
         Instructions:
         1. Carefully read through the entire context, paying close attention to line numbers.
         2. Extract the most accurate and complete answer to the question.
-        3. Return a JSON response with two keys:
+        3. For names and addresses:
+           - Verify names match standard name patterns
+           - Validate addresses against standard address formats
+           - Double-check for context clues that confirm identity
+        4. For numerical values:
+           - Ensure calculations are precise
+           - Verify units and currency symbols
+           - Cross-reference with related fields
+        5. Return a JSON response with two keys:
             - 'answer': Answer to the user's question based on text documents
-            - 'lineNumbers': An array of line numbers (1-indexed) where the EXACT answer was found, if answer was not found return an empty array for 'lineNumbers'
+            - 'lineNumbers': An array of line numbers (1-indexed) where the EXACT answer was found
+            - 'confidence': A score between 0 and 1 indicating confidence in the answer
 
         Important Guidelines:
-        - Ensure absolute precision with line numbers.
-        - Recheck the text if unsure.  Do not guess.
+        - Only cite line numbers where the EXACT information appears
+        - For addresses, ensure ALL components (street, city, state, zip) are present
+        - For names, verify the context confirms it's the insured party
+        - For calculations, show all components used
+        - If unsure about any component, mark it as low confidence
+        - Do not guess or infer missing information
 
         Response Format:
         {
             ""answer"": ""answer to user's question"",
-            ""lineNumbers"": [1, 2, 3]  // Precise line numbers (1-indexed), if answer was not found return an empty array for 'lineNumbers'
+            ""lineNumbers"": [1, 2, 3],
+            ""confidence"": 0.95
         }";
 
     public SearchService(LogService logService)
@@ -135,14 +149,38 @@ public class SearchService
         {
             textBuilder.AppendLine(line.Content);
 
-            if (line.Polygon != null)
+            if (line.Polygon != null && ValidateBoundingBox(line.Polygon))
             {
                 var boxCoordinates = line.Polygon.Select(p => p.ToString("R")).ToList();
                 boundingBoxes.Add(string.Join(",", boxCoordinates));
             }
+            else
+            {
+                // Add empty bounding box to maintain alignment
+                boundingBoxes.Add("");
+            }
         }
 
         return (textBuilder.ToString(), boundingBoxes);
+    }
+
+    private bool ValidateBoundingBox(IReadOnlyList<Azure.AI.DocumentIntelligence.DocumentPoint> polygon)
+    {
+        if (polygon == null || polygon.Count != 4)
+            return false;
+
+        // Ensure coordinates are within reasonable bounds
+        foreach (var point in polygon)
+        {
+            if (point.X < 0 || point.X > 1 || point.Y < 0 || point.Y > 1)
+                return false;
+        }
+
+        // Verify box dimensions are reasonable (not too small)
+        var minWidth = Math.Abs(polygon[1].X - polygon[0].X);
+        var minHeight = Math.Abs(polygon[2].Y - polygon[0].Y);
+        
+        return minWidth >= 0.01 && minHeight >= 0.01;
     }
 
     /*
@@ -176,6 +214,20 @@ public class SearchService
             var jsonResponse = responseWithoutStream.Value.Choices[0].Message.Content.Trim();
         
             answerExtractionResult = JsonConvert.DeserializeObject<AzureSearch.AnswerExtractionResult>(jsonResponse);
+            
+            // Validate the extracted information based on question type
+            if (question.ToLower().Contains("name"))
+            {
+                answerExtractionResult = ValidateNameExtraction(answerExtractionResult, vectorDocumentsWithNumberedLines);
+            }
+            else if (question.ToLower().Contains("address"))
+            {
+                answerExtractionResult = ValidateAddressExtraction(answerExtractionResult, vectorDocumentsWithNumberedLines);
+            }
+            else if (question.ToLower().Contains("claim") || question.ToLower().Contains("amount"))
+            {
+                answerExtractionResult = ValidateAmountExtraction(answerExtractionResult, vectorDocumentsWithNumberedLines);
+            }
         }
         catch (Exception ex)
         {
@@ -187,7 +239,8 @@ public class SearchService
         var queryResult = new AzureSearch.QueryResult
         {
             Answer = answerExtractionResult.Answer ?? "No answer found in the given context.",
-            References = references.Take(3).ToList()
+            References = references.Take(3).ToList(),
+            Confidence = answerExtractionResult.Confidence
         };
 
         return queryResult;
@@ -323,5 +376,107 @@ public class SearchService
         }
 
         return references;
+    }
+
+    private AzureSearch.AnswerExtractionResult ValidateNameExtraction(
+        AzureSearch.AnswerExtractionResult result, 
+        List<AzureSearch.VectorDocumentWithNumberedLines> documents)
+    {
+        // Verify name appears in cited lines
+        var citedLines = GetCitedLines(result.LineNumbers, documents);
+        if (!citedLines.Any(line => line.Contains(result.Answer, StringComparison.OrdinalIgnoreCase)))
+        {
+            result.Confidence = 0.1;
+            return result;
+        }
+
+        // Check for common name patterns
+        var namePattern = @"^[A-Z][a-z]+ (?:[A-Z][a-z]+ )*[A-Z][a-z]+$";
+        if (!System.Text.RegularExpressions.Regex.IsMatch(result.Answer, namePattern))
+        {
+            result.Confidence = 0.5;
+            return result;
+        }
+
+        // Look for contextual clues
+        var hasContext = citedLines.Any(line => 
+            line.Contains("insured", StringComparison.OrdinalIgnoreCase) ||
+            line.Contains("claimant", StringComparison.OrdinalIgnoreCase) ||
+            line.Contains("policy holder", StringComparison.OrdinalIgnoreCase));
+
+        result.Confidence = hasContext ? 0.95 : 0.7;
+        return result;
+    }
+
+    private AzureSearch.AnswerExtractionResult ValidateAddressExtraction(
+        AzureSearch.AnswerExtractionResult result, 
+        List<AzureSearch.VectorDocumentWithNumberedLines> documents)
+    {
+        // Verify address appears in cited lines
+        var citedLines = GetCitedLines(result.LineNumbers, documents);
+        if (!citedLines.Any(line => line.Contains(result.Answer, StringComparison.OrdinalIgnoreCase)))
+        {
+            result.Confidence = 0.1;
+            return result;
+        }
+
+        // Check for address components
+        var hasStreetNumber = System.Text.RegularExpressions.Regex.IsMatch(result.Answer, @"\d+");
+        var hasStreetName = System.Text.RegularExpressions.Regex.IsMatch(result.Answer, @"(?:street|st|avenue|ave|road|rd|boulevard|blvd|lane|ln|drive|dr)", RegexOptions.IgnoreCase);
+        var hasZipCode = System.Text.RegularExpressions.Regex.IsMatch(result.Answer, @"\d{5}(-\d{4})?");
+        
+        var score = 0.0;
+        if (hasStreetNumber) score += 0.3;
+        if (hasStreetName) score += 0.3;
+        if (hasZipCode) score += 0.4;
+        
+        result.Confidence = score;
+        return result;
+    }
+
+    private AzureSearch.AnswerExtractionResult ValidateAmountExtraction(
+        AzureSearch.AnswerExtractionResult result, 
+        List<AzureSearch.VectorDocumentWithNumberedLines> documents)
+    {
+        // Verify amount appears in cited lines
+        var citedLines = GetCitedLines(result.LineNumbers, documents);
+        if (!citedLines.Any(line => line.Contains(result.Answer, StringComparison.OrdinalIgnoreCase)))
+        {
+            result.Confidence = 0.1;
+            return result;
+        }
+
+        // Check for currency format
+        var currencyPattern = @"^\$?\d{1,3}(,\d{3})*(\.\d{2})?$";
+        if (!System.Text.RegularExpressions.Regex.IsMatch(result.Answer.Replace(" ", ""), currencyPattern))
+        {
+            result.Confidence = 0.5;
+            return result;
+        }
+
+        // Look for contextual clues
+        var hasContext = citedLines.Any(line => 
+            line.Contains("total", StringComparison.OrdinalIgnoreCase) ||
+            line.Contains("amount", StringComparison.OrdinalIgnoreCase) ||
+            line.Contains("claim", StringComparison.OrdinalIgnoreCase));
+
+        result.Confidence = hasContext ? 0.95 : 0.7;
+        return result;
+    }
+
+    private List<string> GetCitedLines(List<int> lineNumbers, List<AzureSearch.VectorDocumentWithNumberedLines> documents)
+    {
+        var citedLines = new List<string>();
+        foreach (var doc in documents)
+        {
+            foreach (var lineNum in lineNumbers)
+            {
+                if (lineNum > 0 && lineNum <= doc.NumberedLines.Count)
+                {
+                    citedLines.Add(doc.NumberedLines[lineNum - 1].Line);
+                }
+            }
+        }
+        return citedLines;
     }
 }
