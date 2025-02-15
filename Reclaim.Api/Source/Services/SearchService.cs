@@ -34,19 +34,22 @@ public class SearchService
            - Include exact line numbers where the information is found
            - Verify information across multiple mentions if available
            - Return a confidence score of 0.0 to 1.0
+           - NEVER make assumptions or inferences
 
         2. For NAMES (e.g., 'What is the name of the insured party?'):
-           - Look for formal name fields or headers
-           - Include any titles (Mr., Mrs., etc.) and suffixes
+           - Look for explicit identifiers like 'Insured:', 'Name:', 'Claimant:', etc.
+           - Include any titles (Mr., Mrs., etc.) and suffixes if present
            - Verify against signature lines or repeated mentions
            - Only cite lines that contain the EXACT full name
+           - Confidence should be 1.0 only if name is clearly labeled
 
         3. For ADDRESSES:
-           - Must include complete address (street, city, state, zip)
-           - Look for address fields or letterhead sections
-           - Verify against any repeated mentions
+           - Must find complete address with all components
+           - Look for labels like 'Address:', 'Location:', 'Property:', etc.
+           - Each component (street, city, state, zip) must be verified
            - Only cite lines containing the EXACT address components
-           - Check for address format indicators (e.g., 'Address:', 'Location:')
+           - Components must appear in correct sequence
+           - Confidence should be 1.0 only if address is clearly labeled
 
         4. For NUMERICAL VALUES and CALCULATIONS:
            - Must show exact numbers from the document
@@ -54,18 +57,20 @@ public class SearchService
            - Show calculation steps if multiple numbers are involved
            - Verify totals against component values
            - Only cite lines containing the EXACT numbers used
+           - For calculations, show the math in the answer
 
         5. Response Format Requirements:
            - 'answer': Must be exact text from document
            - 'lineNumbers': Array of line numbers containing EXACT text
-           - 'confidence': Only high confidence (>0.90) for critical fields
+           - 'confidence': High confidence (>0.90) only with clear labels
            - 'type': Must be one of ['name', 'address', 'calculation', 'general']
 
         6. Citation Rules:
-           - Only cite lines that contain the EXACT text used in the answer
+           - Only cite lines that contain the EXACT text used in answer
            - For addresses, cite ALL lines containing address components
-           - For calculations, cite ALL lines containing relevant numbers
-           - Never cite contextual or surrounding lines unless they contain answer components
+           - For calculations, cite ALL lines with relevant numbers
+           - Never cite contextual or surrounding lines
+           - Bounding boxes must match the exact cited text
 
         If you cannot find information meeting these strict requirements, respond with:
         {
@@ -258,11 +263,12 @@ public class SearchService
 
     public async Task<AzureSearch.QueryResult> Query(Claim claim, Chat chat, string question)
     {
-        // First, build conversation history
+        // Build conversation history with enhanced context
         var conversationContext = BuildConversationContext(chat);
         
         // Use conversation context for better semantic search
-        var vectorDocuments = await QueryVectorDocuments(claim, null, $"{conversationContext}\n{question}");
+        var searchQuery = BuildSearchQuery(conversationContext, question);
+        var vectorDocuments = await QueryVectorDocuments(claim, null, searchQuery);
         var vectorDocumentsWithNumberedLines = GetDocumentsWithNumberedLines(vectorDocuments);
         var combinedTextWithNumberedLines = GetCombinedTextWithNumberedLines(vectorDocumentsWithNumberedLines);
 
@@ -279,27 +285,21 @@ public class SearchService
             // Enhanced validation of answer and references
             if (answerExtractionResult.LineNumbers != null && answerExtractionResult.LineNumbers.Any())
             {
-                var exactTextMatches = ValidateExactTextMatches(
-                    answerExtractionResult.Answer,
-                    answerExtractionResult.LineNumbers,
-                    vectorDocumentsWithNumberedLines
+                var validationResult = ValidateAnswerAndReferences(
+                    answerExtractionResult,
+                    vectorDocumentsWithNumberedLines,
+                    question
                 );
                 
-                if (!exactTextMatches)
+                if (!validationResult.IsValid)
                 {
-                    // If exact matches weren't found, try to find better matches
-                    var (correctedAnswer, correctedLines) = FindBestTextMatches(
-                        answerExtractionResult.Answer,
-                        vectorDocumentsWithNumberedLines
-                    );
-                    
-                    answerExtractionResult.Answer = correctedAnswer;
-                    answerExtractionResult.LineNumbers = correctedLines;
+                    answerExtractionResult = validationResult.CorrectedResult;
                 }
             }
         }
         catch (Exception ex)
         {
+            _logService.Error($"Failed to query Azure OpenAI: {ex.Message}");
             throw new ApiException(ErrorCode.DocumentOpenAIQueryFailed, $"Failed to query Azure OpenAI. {ex.Message}");
         }
 
@@ -613,15 +613,36 @@ public class SearchService
         var normalizedContent = NormalizeAddress(content);
         var normalizedAnswer = NormalizeAddress(answer);
 
+        // Split address into components
         var addressParts = normalizedAnswer.Split(new[] { ' ', ',', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        
+        // Key components that must be present (street number, street name, city, state, zip)
+        var keyComponents = addressParts.Where(part => 
+            char.IsDigit(part[0]) || // Street number or zip
+            part.Length > 3 || // Street name, city
+            part.Length == 2 && char.IsUpper(part[0]) && char.IsUpper(part[1]) // State
+        ).ToList();
 
-        var significantParts = addressParts.Where(part => part.Length > 2);
-        return significantParts.All(part => normalizedContent.Contains(part));
+        // All key components must be present in the content
+        if (!keyComponents.All(comp => normalizedContent.Contains(comp)))
+            return false;
+
+        // Check components are in correct order
+        var lastIndex = -1;
+        foreach (var component in keyComponents)
+        {
+            var currentIndex = normalizedContent.IndexOf(component);
+            if (currentIndex < lastIndex)
+                return false;
+            lastIndex = currentIndex;
+        }
+
+        return true;
     }
 
     private string NormalizeAddress(string address)
     {
-        return address.ToLower()
+        var normalized = address.ToLower()
             .Replace("street", "st")
             .Replace("avenue", "ave")
             .Replace("road", "rd")
@@ -634,17 +655,55 @@ public class SearchService
             .Replace("apartment", "apt")
             .Replace("number", "no")
             .Replace(".", "")
-            .Replace(",", " ")
-            .Replace("  ", " ");
+            .Replace("#", "")
+            .Replace("unit", "")
+            .Replace("  ", " ")
+            .Trim();
+
+        // Normalize state abbreviations
+        var stateAbbreviations = new Dictionary<string, string>
+        {
+            {"alabama", "al"}, {"alaska", "ak"}, {"arizona", "az"},
+            // Add more state mappings as needed
+        };
+
+        foreach (var state in stateAbbreviations)
+        {
+            normalized = normalized.Replace(state.Key, state.Value);
+        }
+
+        return normalized;
     }
 
     private bool ValidateNameContent(string content, string answer)
     {
-        var normalizedContent = content.ToLower();
-        var normalizedAnswer = answer.ToLower();
+        var normalizedContent = content.ToLower().Trim();
+        var normalizedAnswer = answer.ToLower().Trim();
 
-        var nameParts = normalizedAnswer.Split(new[] { ' ', '.', ',' }, StringSplitOptions.RemoveEmptyEntries);
-        return nameParts.All(part => normalizedContent.Contains(part));
+        // Enhanced name validation
+        var nameParts = normalizedAnswer.Split(new[] { ' ', '.', ',', '-' }, StringSplitOptions.RemoveEmptyEntries);
+        
+        // Check for exact sequence match first
+        if (normalizedContent.Contains(normalizedAnswer))
+            return true;
+        
+        // Check for all parts in close proximity
+        var contentWords = normalizedContent.Split(' ');
+        var firstNameIndex = -1;
+        var lastNameIndex = -1;
+        
+        for (int i = 0; i < contentWords.Length; i++)
+        {
+            if (nameParts.Any(part => contentWords[i].Contains(part)))
+            {
+                if (firstNameIndex == -1)
+                    firstNameIndex = i;
+                lastNameIndex = i;
+            }
+        }
+        
+        // Name parts should be within reasonable proximity
+        return firstNameIndex != -1 && (lastNameIndex - firstNameIndex) <= nameParts.Length + 1;
     }
 
     private bool ValidateCalculationContent(string content, string answer)
@@ -708,8 +767,9 @@ public class SearchService
         switch (type.ToLower())
         {
             case "address":
+                return ValidateAddressBoxes(reference.BoundingBoxes);
             case "name":
-                return ValidateAlignedBoxes(reference.BoundingBoxes);
+                return ValidateNameBoxes(reference.BoundingBoxes);
             case "calculation":
                 return ValidateCalculationBoxes(reference.BoundingBoxes);
             default:
@@ -717,7 +777,7 @@ public class SearchService
         }
     }
 
-    private bool ValidateAlignedBoxes(List<string> boundingBoxes)
+    private bool ValidateAddressBoxes(List<string> boundingBoxes)
     {
         if (boundingBoxes.Count <= 1) return true;
 
@@ -726,10 +786,44 @@ public class SearchService
             var boxes = boundingBoxes.Select(box => 
                 box.Split(',').Select(float.Parse).ToList()).ToList();
 
-            var firstTop = boxes[0][1];
-            var tolerance = (boxes[0][5] - boxes[0][1]) * 0.1f;
+            // Address components should be aligned and in sequence
+            var firstLeft = boxes[0][0];
+            var tolerance = (boxes[0][2] - boxes[0][0]) * 0.2f;
+            var maxVerticalGap = (boxes[0][5] - boxes[0][1]) * 2.0f; // 2 times line height
 
-            return boxes.All(box => Math.Abs(box[1] - firstTop) <= tolerance);
+            for (int i = 1; i < boxes.Count; i++)
+            {
+                // Check horizontal alignment
+                if (Math.Abs(boxes[i][0] - firstLeft) > tolerance)
+                    return false;
+
+                // Check vertical sequence
+                if (i > 0 && boxes[i][1] - boxes[i-1][5] > maxVerticalGap)
+                    return false;
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private bool ValidateNameBoxes(List<string> boundingBoxes)
+    {
+        if (boundingBoxes.Count <= 1) return true;
+
+        try
+        {
+            var boxes = boundingBoxes.Select(box => 
+                box.Split(',').Select(float.Parse).ToList()).ToList();
+
+            // Name components should be on the same line or adjacent lines
+            var maxVerticalDistance = (boxes[0][5] - boxes[0][1]) * 1.5f; // 1.5 times line height
+            var firstTop = boxes[0][1];
+
+            return boxes.All(box => Math.Abs(box[1] - firstTop) <= maxVerticalDistance);
         }
         catch
         {
@@ -754,6 +848,131 @@ public class SearchService
         catch
         {
             return false;
+        }
+    }
+
+    private string BuildSearchQuery(string conversationContext, string question)
+    {
+        var queryBuilder = new StringBuilder();
+        
+        // Add question type hints
+        if (question.Contains("name", StringComparison.OrdinalIgnoreCase))
+            queryBuilder.Append("Find sections with labels like 'Name:', 'Insured:', 'Claimant:'. ");
+        else if (question.Contains("address", StringComparison.OrdinalIgnoreCase))
+            queryBuilder.Append("Find sections with labels like 'Address:', 'Location:', 'Property:'. ");
+        else if (question.Contains("amount", StringComparison.OrdinalIgnoreCase) || 
+                 question.Contains("cost", StringComparison.OrdinalIgnoreCase) ||
+                 question.Contains("value", StringComparison.OrdinalIgnoreCase))
+            queryBuilder.Append("Find sections with numerical values, calculations, and totals. ");
+
+        // Add conversation context if relevant
+        if (!string.IsNullOrEmpty(conversationContext))
+        {
+            queryBuilder.Append(conversationContext);
+        }
+
+        // Add the actual question
+        queryBuilder.Append(question);
+
+        return queryBuilder.ToString();
+    }
+
+    private (bool IsValid, AzureSearch.AnswerExtractionResult CorrectedResult) ValidateAnswerAndReferences(
+        AzureSearch.AnswerExtractionResult result,
+        List<AzureSearch.VectorDocumentWithNumberedLines> documents,
+        string question)
+    {
+        var correctedResult = new AzureSearch.AnswerExtractionResult
+        {
+            Type = result.Type,
+            Confidence = result.Confidence
+        };
+
+        // Determine answer type if not specified
+        if (string.IsNullOrEmpty(result.Type))
+        {
+            result.Type = DetermineAnswerType(question);
+        }
+
+        var exactMatches = ValidateExactTextMatches(result.Answer, result.LineNumbers, documents);
+        if (exactMatches)
+        {
+            return (true, result);
+        }
+
+        // Find better matches based on answer type
+        var (correctedAnswer, correctedLines) = FindTypeSpecificMatches(
+            result.Type,
+            result.Answer,
+            documents
+        );
+
+        if (string.IsNullOrEmpty(correctedAnswer))
+        {
+            correctedResult.Answer = "I cannot find a reliable answer in the provided documents";
+            correctedResult.LineNumbers = new List<int>();
+            correctedResult.Confidence = 0.0;
+            return (false, correctedResult);
+        }
+
+        correctedResult.Answer = correctedAnswer;
+        correctedResult.LineNumbers = correctedLines;
+        correctedResult.Confidence = CalculateConfidence(correctedAnswer, correctedLines, result.Type);
+
+        return (false, correctedResult);
+    }
+
+    private string DetermineAnswerType(string question)
+    {
+        question = question.ToLower();
+        
+        if (question.Contains("name") || question.Contains("who"))
+            return "name";
+        if (question.Contains("address") || question.Contains("where") || question.Contains("location"))
+            return "address";
+        if (question.Contains("amount") || question.Contains("cost") || question.Contains("value") ||
+            question.Contains("total") || question.Contains("sum") || question.Contains("calculate"))
+            return "calculation";
+        
+        return "general";
+    }
+
+    private (string answer, List<int> lineNumbers) FindTypeSpecificMatches(
+        string type,
+        string originalAnswer,
+        List<AzureSearch.VectorDocumentWithNumberedLines> documents)
+    {
+        switch (type?.ToLower())
+        {
+            case "name":
+                return FindNameMatch(originalAnswer, documents);
+            case "address":
+                return FindAddressMatch(originalAnswer, documents);
+            case "calculation":
+                return FindCalculationMatch(originalAnswer, documents);
+            default:
+                return FindBestTextMatches(originalAnswer, documents);
+        }
+    }
+
+    private double CalculateConfidence(string answer, List<int> lineNumbers, string type)
+    {
+        if (string.IsNullOrEmpty(answer) || lineNumbers == null || !lineNumbers.Any())
+            return 0.0;
+
+        switch (type?.ToLower())
+        {
+            case "name":
+                return answer.Contains(":") ? 1.0 : 0.95;
+            case "address":
+                var hasAllComponents = answer.Contains(",") && 
+                                     (answer.Contains("Street") || answer.Contains("Ave") || answer.Contains("Road")) &&
+                                     answer.Any(char.IsDigit);
+                return hasAllComponents ? 1.0 : 0.9;
+            case "calculation":
+                return lineNumbers.Count > 1 ? 1.0 : 0.95;
+            default:
+                return 0.9;
         }
     }
 }
