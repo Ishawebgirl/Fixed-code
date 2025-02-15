@@ -1,0 +1,81 @@
+﻿<#@ output extension=".generated.cs" #>
+<#@ Assembly Name="System.Data" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+
+<#
+string path = Path.GetDirectoryName(".");
+string columnCode = "Code";
+string columnDescription = "Description";
+string connectionString = "data source=.;initial catalog=Reclaim;integrated security=True";
+string nameSpace = "Reclaim.Api.Model";
+SqlConnection conn = new SqlConnection(connectionString);
+List<string> tableNames = GetTableNames(conn);
+#>
+using System;
+using System.ComponentModel.DataAnnotations;
+using Reclaim.Api.Model;
+
+namespace <#= nameSpace #>
+{<#
+	foreach (string tableName in tableNames)
+	{
+		string columnId = tableName + "ID";
+	
+#>
+
+	public enum <#= tableName #> : int
+    {
+<#
+    string command = string.Format("select {0}, {1}, {2} from {3} order by {0}", columnId, columnCode, columnDescription, tableName);
+    SqlCommand comm = new SqlCommand(command, conn);
+ 
+    conn.Open();
+ 
+    SqlDataReader reader = comm.ExecuteReader();
+    bool loop = reader.Read();
+
+    while(loop)
+    {
+	#>		 [EnumDisplayName(DisplayName = "<#= reader[columnDescription] #>")]
+		 <#= reader[columnCode] #> = <#= reader[columnId] #><# loop = reader.Read(); #><#= loop ? ",\r\n\r\n" : string.Empty #><#
+    }
+	
+#>  
+	}
+<# 
+ conn.Close();
+ } #>}
+<#+
+    private string Pascalize(object value)
+    {
+        Regex rx = new Regex(@"(?:[^a-zA-Z0-9]*)(?<first>[a-zA-Z0-9])(?<reminder>[a-zA-Z0-9]*)(?:[^a-zA-Z0-9]*)");
+        return rx.Replace(value.ToString(), m => m.Groups["first"].ToString().ToUpper() + m.Groups["reminder"].ToString().ToLower());
+    }
+#>
+<#+
+	private List<string> GetTableNames(SqlConnection conn)
+	{
+		List<string> tableNames = new List<string>();
+
+		string command = "select t1.name from (select o.name from sysobjects o inner join syscolumns c on c.id = o.id and o.xtype = 'U' group by o.name having count(*) = 5) t1 inner join (select o.name from sysobjects o inner join syscolumns c on c.id = o.id where c.name = o.name + 'id') t2 on t1.name = t2.name inner join (select o.name from sysobjects o inner join syscolumns c on c.id = o.id where c.name = 'Code') t3 on t1.name = t3.name inner join (select o.name from sysobjects o inner join syscolumns c on c.id = o.id where c.name = 'Description') t4 on t1.name = t4.name where t1.name not in ('DocumentGroup', 'ConsentGroup') order by t1.name";
+		SqlCommand comm = new SqlCommand(command, conn);
+		conn.Open();
+ 
+		SqlDataReader reader = comm.ExecuteReader();
+		bool loop = reader.Read();
+ 
+		while (loop)
+		{
+			string tableName = reader["name"].ToString();
+			tableNames.Add(tableName);
+			loop = reader.Read();
+		}
+		conn.Close();
+
+		return tableNames;
+	}
+#>

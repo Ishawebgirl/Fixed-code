@@ -1,0 +1,4 @@
+ 
+INSERT INTO [PropertyType] ([PropertyTypeID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'House', N'House', '2024-10-29 18:42:54', '2024-10-29 18:42:54'
+UNION SELECT 2, N'Condominium', N'Condominium', '2024-10-29 18:43:08', '2024-10-29 18:43:08'

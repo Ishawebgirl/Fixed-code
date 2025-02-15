@@ -1,0 +1,7 @@
+ 
+INSERT INTO [ClaimStatus] ([ClaimStatusID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Unassigned', N'Unassigned', '2024-10-28 19:44:52', '2024-10-28 19:44:52'
+UNION SELECT 2, N'Investigating', N'Investigating', '2024-10-28 19:45:07', '2024-10-28 19:45:07'
+UNION SELECT 3, N'Adjudicated', N'Adjudicated', '2024-10-28 19:45:15', '2024-10-28 19:45:15'
+UNION SELECT 4, N'Resolved', N'Resolved', '2024-10-28 19:45:18', '2024-10-28 19:45:18'
+UNION SELECT 5, N'Tombstoned', N'Tombstoned', '2024-10-28 19:45:30', '2024-10-28 19:45:30'

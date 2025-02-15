@@ -1,0 +1,5 @@
+ 
+INSERT INTO [ClaimDisposition] ([ClaimDispositionID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Undecided', N'Undecided', '2024-10-28 19:45:47', '2024-10-28 19:45:47'
+UNION SELECT 2, N'NotFraudulent', N'Not fraudulent', '2024-10-28 19:46:02', '2024-10-28 19:46:02'
+UNION SELECT 3, N'Fraudulent', N'Fraudulent', '2024-10-28 19:46:11', '2024-10-28 19:46:11'

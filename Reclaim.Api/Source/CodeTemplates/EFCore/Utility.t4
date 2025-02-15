@@ -1,0 +1,106 @@
+<#@ template hostSpecific="true" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Design" #>
+<#@ assembly name="Microsoft.EntityFrameworkCore.Relational" #>
+<#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Data" #> 
+<#@ import namespace="Microsoft.EntityFrameworkCore" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Design" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Infrastructure" #>
+<#@ import namespace="Microsoft.EntityFrameworkCore.Scaffolding" #>
+<#@ import namespace="Microsoft.Extensions.DependencyInjection" #>
+<#+
+    private List<string> GetAllEnums()
+    {
+        return new List<string> 
+        {
+            "ChatRole",
+            "ChatType",
+            "ClaimDisposition",
+            "ClaimType",
+            "ClaimStatus",
+            "CustomerStatus",
+            "DocumentType",
+            "EmailStatus",
+            "ErrorCode",
+            "IdentityProvider",
+            "InvestigatorStatus",
+            "JobStatus",
+            "JobType",
+            "LogEntryLevel",
+            "OwnershipType",
+            "PropertyType",
+            "Role",
+            "RoofType"
+        };
+    }
+
+    private string CustomizeAccessor(string typeName, string nullable, string entity, string property) 
+    {
+        if (property.EndsWith("Id"))
+        {
+            var clipped = property.Substring(0, property.Length - 2);
+
+            if (IsEnum(clipped))
+            {
+                typeName = clipped;
+                property = clipped;
+
+                if (property.StartsWith(entity) && property != entity)
+                    property = property.Substring(entity.Length);
+            }
+            else 
+            {
+                property = CustomizePropertyName(entity, property);
+            }
+        }
+        
+        return $"{typeName}{nullable} {property}";
+    }
+
+    private string CustomizePropertyName(string entity, string property)
+    {
+        if (property.EndsWith("Id"))
+        {
+            var clipped = property.Substring(0, property.Length - 2);
+            property = clipped + (IsEnum(clipped) ? "" : "ID");
+        }
+
+        if (property.StartsWith(entity) && property != entity)
+            property = property.Substring(entity.Length);
+
+        return property;
+    }
+
+    private string CustomizeLamdbaPropertyNames(string entity, System.Collections.Generic.IReadOnlyList<Microsoft.EntityFrameworkCore.Metadata.IProperty> properties, string key)
+    {
+        if (properties.Count() == 1)
+            return $"{key} => {key}.{CustomizePropertyName(entity, properties.First().Name)}";
+        else 
+        {
+            var fields = properties.Select(x => $"{key}.{CustomizePropertyName(entity, x.Name)}");
+            return $"{key} => new {{ {string.Join(", ", fields)} }}";
+        }
+    }
+
+    private string CustomizeForeignKeyFragment(string entity, string fragment, string key)
+    {
+        fragment = fragment.Replace("Id)\r\n", "ID)\r\n");
+        fragment = fragment.Replace($"{key} => {key}.{entity}", $"{key} => {key}.");
+
+        return fragment;
+    }
+
+    private bool IsEnum(string entity) 
+    {
+        var clipped = entity;
+
+        if (entity.EndsWith("Id") || entity.EndsWith("ID"))
+            clipped = clipped.Substring(0, clipped.Length - 2);
+
+        return GetAllEnums().Contains(clipped);
+    }
+#>

@@ -1,0 +1,5 @@
+ 
+INSERT INTO [ChatRole] ([ChatRoleID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'System', N'System', '2025-01-07 16:49:04', '2025-01-07 16:49:04'
+UNION SELECT 2, N'User', N'User', '2025-01-07 16:49:10', '2025-01-07 16:49:10'
+UNION SELECT 3, N'Assistant', N'Assistant', '2025-01-22 16:13:40', '2025-01-22 16:13:40'

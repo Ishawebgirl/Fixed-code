@@ -1,0 +1,109 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ Assembly Name="System.Data" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Configuration;
+
+<#
+string connectionString = "data source=.;initial catalog=Reclaim;integrated security=True";
+SqlConnection conn = new SqlConnection(connectionString);
+List<string> names = GetNames(conn);
+List<string> values = GetValues(conn);
+#>
+namespace Reclaim.Api
+{
+    public enum SettingName
+    {
+<# 				
+				foreach (string name in names)
+				{
+#>
+		<#=name#><#=(name != names[names.Count - 1] ? ",\r\n" : "\r\n")#><#
+				}				
+#>	}
+
+	public static class Setting
+	{
+<#
+	for (int i = 0; i < names.Count; i++)
+    {
+		string name = names[i];
+		string type = "string";
+		string value = values[i];
+		bool dummyBool;
+		int dummyInt;
+		decimal dummyDecimal;
+
+		// ok this is a little cheesy, but I'm not able to add types into the settings file
+		if (bool.TryParse(value, out dummyBool))
+			type = "bool";
+		else if (int.TryParse(value, out dummyInt))
+			type = "int";
+		else if (decimal.TryParse(value, out dummyDecimal))
+			type = "decimal";
+			
+#>
+		public static <#=type#> <#=name#> { get { return SettingManager.Get<<#=type#>>(SettingName.<#=name#>); } }
+<#
+                }#>
+	}
+}
+
+<#+
+	private List<string> GetNames(SqlConnection conn)
+	{
+		List<string> names = new List<string>();
+
+		string command = "select name from applicationsetting order by applicationsettingid";
+		SqlCommand comm = new SqlCommand(command, conn);
+		conn.Open();
+ 
+		SqlDataReader reader = comm.ExecuteReader();
+		bool loop = reader.Read();
+ 
+		while (loop)
+		{
+			string name = reader["Name"].ToString();
+			names.Add(name);
+			loop = reader.Read();
+		}
+		conn.Close();
+
+		return names;
+	}
+
+	private List<string> GetValues(SqlConnection conn)
+	{
+		List<string> values = new List<string>();
+
+		string command = "select value from applicationsetting order by applicationsettingid";
+		SqlCommand comm = new SqlCommand(command, conn);
+		conn.Open();
+ 
+		SqlDataReader reader = comm.ExecuteReader();
+		bool loop = reader.Read();
+ 
+		while (loop)
+		{
+			string value = reader["Value"].ToString();
+			values.Add(value);
+			loop = reader.Read();
+		}
+		conn.Close();
+
+		return values;
+	}
+#>

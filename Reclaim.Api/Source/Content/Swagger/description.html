@@ -1,0 +1,114 @@
+﻿<div class="swagger-section">
+    <div class="swagger-ui-wrap">
+        <div class="swagger-ui-container">
+
+            <div class="intro-content">
+  
+                <form accept-charset="UTF-8" class="sandbox">
+                    <div style="margin:0;padding:0;display:inline"></div>
+                    <h4>Standard Response Messages</h4>
+                    <table class="fullwidth">
+                        <thead>
+                            <tr>
+                                <th>HTTP Status Code</th>
+                                <th>Reason</th>
+                                <th>Response Model</th>                              
+                            </tr>
+                        </thead>
+                        <tbody class="operation-status">
+                            <tr>
+                                <td width="15%" class="code">200</td>
+                                <td class="markdowne">
+                                    Success
+                                </td>
+                                <td width="50%">(endpoint-specific)</td>                            
+                            </tr>
+                            <tr>
+                                <td width="15%" class="code">400</td>
+                                <td class="markdown">
+                                    Bad request
+                                </td>
+                                <td width="50%">ApiException</td>
+                            </tr>
+                            <tr>
+                                <td width="15%" class="code">401</td>
+                                <td class="markdown">
+                                    Not authorized
+                                </td>
+                                <td width="50%">ApiException</td>
+                            </tr>
+                            <tr>
+                                <td width="15%" class="code">403</td>
+                                <td class="markdown">
+                                    Invalid privileges
+                                </td>
+                                <td width="50%">ApiException</td>
+                                <td class="headers">
+                                    <table>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="15%" class="code">404</td>
+                                <td class="markdown">
+                                    Route not found
+                                </td>
+                                <td width="50%">ApiException</td>
+                                <td class="headers">
+                                    <table>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="15%" class="code">500</td>
+                                <td class="markdown">
+                                    Server error
+                                </td>
+                                <td width="50%">ApiException</td>
+                                <td class="headers">
+                                    <table>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+                <br />
+                <br />
+                <br />
+                <div class="content" style="">
+                    <h4>ApiException Model</h4>
+                    <p>
+                        <div>
+                            <div>
+                                <div>
+                                    <div class="signature-container">
+                                        <div class="snippet" style="display: block;">
+                                            <pre><code class="json">    {
+        "<span class="attribute">errorCode</span>": <span class="value"><span class="number">1006</span></span>,
+        "<span class="attribute">errorCodeName</span>": <span class="value"><span class="string">"EntityDoesNotExist"</span></span>,
+        "<span class="attribute">message</span>": <span class="value"><span class="string">"No account with ID 439 exists"</span></span>,
+        "<span class="attribute">logEntryId</span>": <span class="value"><span class="number">42</span></span>                                       
+    }</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p>
+                    <br>
+                </div>
+            </div>
+
+
+
+            </div>
+
+        </div>
+    </div>

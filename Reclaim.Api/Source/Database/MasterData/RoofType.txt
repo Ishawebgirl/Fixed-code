@@ -1,0 +1,12 @@
+ 
+INSERT INTO [RoofType] ([RoofTypeID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Rolled', N'Rolled', '2024-10-29 18:45:39', '2024-10-29 18:45:39'
+UNION SELECT 2, N'BUR', N'Built-up roofing', '2024-10-29 18:45:54', '2024-10-29 18:45:54'
+UNION SELECT 3, N'Membrane', N'Membrane', '2024-10-29 18:46:02', '2024-10-29 18:46:02'
+UNION SELECT 4, N'AsphaltShingles', N'Asphalt shingles', '2024-10-29 18:46:21', '2024-10-29 18:46:21'
+UNION SELECT 5, N'Metal', N'Metal', '2024-10-29 18:46:37', '2024-10-29 18:46:37'
+UNION SELECT 6, N'Shakes', N'Shakes', '2024-10-29 18:46:54', '2024-10-29 18:46:54'
+UNION SELECT 7, N'Clay', N'Clay', '2024-10-29 18:47:01', '2024-10-29 18:47:01'
+UNION SELECT 8, N'Concrete', N'Concrete', '2024-10-29 18:47:10', '2024-10-29 18:47:10'
+UNION SELECT 9, N'Slate', N'Slate', '2024-10-29 18:47:15', '2024-10-29 18:47:15'
+UNION SELECT 10, N'Other', N'Other', '2024-10-29 18:47:24', '2024-10-29 18:47:24'

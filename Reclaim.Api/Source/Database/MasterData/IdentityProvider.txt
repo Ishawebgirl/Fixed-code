@@ -1,0 +1,4 @@
+ 
+INSERT INTO [IdentityProvider] ([IdentityProviderID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Local', N'Local', '2024-04-12 21:49:29', '2024-04-12 21:49:29'
+UNION SELECT 2, N'Google', N'Google', '2024-04-12 21:49:29', '2024-04-12 21:49:29'

@@ -1,0 +1,3 @@
+ 
+INSERT INTO [ChatType] ([ChatTypeID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'ClaimQuery', N'Claim query', '2025-01-07 16:49:34', '2025-01-07 16:49:34'

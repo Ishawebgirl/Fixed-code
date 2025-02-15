@@ -1,0 +1,294 @@
+﻿@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+*
+{
+    font-family: 'Lato' !important;
+}
+
+.swagger-ui .information-container
+{
+    position: relative;
+    top: -20px;
+}
+
+.swagger-ui .markdown code, 
+.swagger-ui .renderedMarkdown code
+{
+    color: #000000 !important;
+    font-family: monospace !important;
+    font-size:15px !important;
+    padding: 15px !important ;
+}
+
+.scheme-container {
+    display: none;
+}
+
+.description p
+{
+    font-size: 18px !important;
+}
+
+.swagger-ui .info
+{
+    margin-bottom: 30px;
+}
+
+.scheme-container {
+    xdisplay: none;
+    position: relative;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.operation-filter-input {
+    margin-top: 0 !important;
+}
+
+.swagger-ui .auth-wrapper {
+    xposition: absolute;
+    xtop: 50px;
+}
+.swagger-ui .auth-wrapper .authorize
+{
+    xposition: absolute;
+    xtop: 0; 
+    xtop: -105px;
+}
+
+.swagger-ui .scheme-container
+{
+    background: none !important;
+    box-shadow: none !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 115px !important;
+}
+
+.swagger-ui .auth-btn-wrapper .btn:first-child
+{
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-right: 20px;
+    background-color: transparent;
+    border-color: #49cc90;
+    color: #49cc90;
+    display: inline;
+    line-height: 1;
+}
+
+.swagger-ui .auth-container input[type=password], .swagger-ui .auth-container input[type=text]
+{
+    min-width: 100%;
+    margin-bottom: 20px;
+}
+
+.swagger-ui textarea
+{
+    min-height: 120px;
+    font-family: monospace !important;
+    font-size: 15px !important;
+    font-weight: bold;
+}
+
+code span
+{
+    font-family: monospace !important;
+    font-size: 15px !important;
+    font-weight: bold;
+}
+
+.xrenderedMarkdown p
+{
+    margin: 0 0 20px 0 !important;
+}
+
+a.toggleOperation
+{
+    font-weight: bold;
+}
+
+.download-url-wrapper,
+.url,
+.title small,
+.btn.try-out__btn,
+.models
+{
+    display: none !important;
+}
+
+.intro-content td p
+{
+    margin: 0 !important;
+}
+
+.intro-content td
+{
+    padding: 5px 0 5px 0 !important;
+}
+
+.intro-content th,
+.opblock-summary-description
+{
+    font-size: 14px !important;
+}
+
+.http_method a.toggleOperation
+{
+    padding-bottom: 6px !important;
+    padding-top: 6px !important;
+}
+
+.path a.toggleOperation
+{
+    position: relative;
+    top: 1px;
+}
+
+input.parameter
+{
+    position: relative;
+    top: -2px;
+}
+
+.topbar-wrapper a
+{
+    background-image: url(/content/swagger/logo-white.png);
+    height: 55px;
+    background-repeat: no-repeat;
+}
+
+.topbar-wrapper svg
+{
+    display: none;
+}
+
+.logo__img {
+    display: none !important;
+}
+
+#api_selector #input_baseUrl {
+    display: none;
+}
+
+#api_selector .header__btn {
+    display:none;
+}
+
+div#message-bar
+{
+    font-family: Lato !important;
+}
+
+.footer {
+    display: none;
+}
+
+input.submit {
+    margin-top: 12px;
+}
+
+.swagger-section #header
+{
+    background-color: #005395 !important;
+    padding-bottom: 24px !important;
+    height: 33px;
+}
+
+.response_hider
+{
+    position: relative;
+    top: 17px;
+    left: 10px;
+}
+
+table.fullwidth
+{
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.response-content-type
+{
+    display: none
+}
+
+br 
+{
+    display: none;
+}
+
+.sandbox h4:nth-of-type(2)::before
+{
+    content: 'Specific Exception ';
+}
+
+.intro-content
+{
+    background-color: #ebf3f9;
+    border: 1px solid #c3d9ec;
+    padding: 10px;
+    margin-top: 12px;
+}
+
+.intro-content h4
+{
+    color: #0f6ab4 !important;
+    font-size: 15.84px !important;
+    margin-bottom: 10px;
+}
+
+.description .title 
+{
+    padding-bottom: 30px !important;
+    font-size: 20px !important;
+}
+
+.api_selector
+{
+    position: relative;
+    top: -5px;
+}
+
+#api_selector::before
+{
+    content: 'OAuth access token: ';
+    font-size: 14px;
+    position: relative;
+    left: 7px;
+    color: #005395;
+}
+
+
+.not-submit
+{
+    display: block;
+    clear: none;
+    float: left;
+    padding: 6px 8px;
+    appearance: auto;
+    user-select: none;
+    white-space: pre;
+    align-items: flex-start;
+    text-align: center;
+    cursor: default;
+    box-sizing: border-box;
+    background-color: buttonface;
+    color: buttontext;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: buttonborder;
+    border-image: initial;
+}
+
+#message-bar {
+    visibility: hidden;
+}
+
+.opblock-description br
+{
+    display: block;
+}

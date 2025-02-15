@@ -1,0 +1,5 @@
+ 
+INSERT INTO [LogEntryLevel] ([LogEntryLevelID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Default', N'Default', '2024-04-12 21:51:29', '2024-04-12 21:51:29'
+UNION SELECT 2, N'Verbose', N'Verbose', '2024-04-12 21:51:29', '2024-04-12 21:51:29'
+UNION SELECT 3, N'Trace', N'Trace', '2024-04-12 21:51:29', '2024-04-12 21:51:29'

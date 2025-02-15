@@ -1,0 +1,5 @@
+ 
+INSERT INTO [OwnershipType] ([OwnershipTypeID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'OwnerOccupied', N'OwnerOccupied', '2024-10-29 18:40:00', '2024-10-29 18:40:00'
+UNION SELECT 2, N'Rented', N'Rented', '2024-10-29 18:40:10', '2024-10-29 18:40:10'
+UNION SELECT 3, N'Investment', N'Investment', '2024-10-29 18:40:34', '2024-10-29 18:40:34'

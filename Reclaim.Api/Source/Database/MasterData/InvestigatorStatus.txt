@@ -1,0 +1,5 @@
+ 
+INSERT INTO [InvestigatorStatus] ([InvestigatorStatusID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Active', N'Active', '2024-11-17 18:59:53', '2024-11-17 18:59:53'
+UNION SELECT 2, N'OnProbation', N'On probation', '2024-11-17 19:00:02', '2024-11-17 19:00:02'
+UNION SELECT 3, N'Terminated', N'Terminated', '2024-11-17 19:00:10', '2024-11-17 19:00:10'

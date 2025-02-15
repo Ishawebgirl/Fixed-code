@@ -1,0 +1,47 @@
+{
+  "profiles": {
+    "Reclaim.api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "http://10.211.55.3:50000/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://10.211.55.3:50000/",
+      "sslPort": 44300
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "http://+:80"
+      },
+      "publishAllPorts": true,
+      "httpPort": 50000
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "workingDirectory": "\\\\Mac\\Home\\Development\\Reclaim\\github\\Reclaim.Web",
+      "launchBrowser": true,
+      "use64Bit": true
+    },
+    "IIS": {
+      "commandName": "IIS",
+      "launchBrowser": true,
+      "ancmHostingModel": "InProcess"
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost:8080",
+      "sslPort": 0
+    },
+    "iisExpress": {
+      "applicationUrl": "http://10.211.55.3:8080/",
+      "sslPort": 0
+    }
+  }
+}

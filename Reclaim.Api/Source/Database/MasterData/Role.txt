@@ -1,0 +1,6 @@
+ 
+INSERT INTO [Role] ([RoleID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Administrator', N'Administrator', '2024-04-21 04:20:39', '2024-04-21 04:20:39'
+UNION SELECT 2, N'Customer', N'Customer', '2024-04-21 04:20:48', '2024-04-21 04:20:48'
+UNION SELECT 3, N'Investigator', N'Investigator', '2024-04-21 04:20:54', '2024-04-21 04:20:54'
+UNION SELECT 4, N'Support', N'Support', '2024-05-16 19:41:54', '2024-05-16 19:41:54'

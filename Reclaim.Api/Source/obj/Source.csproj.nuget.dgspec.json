@@ -1,0 +1,245 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\dev\\upwork(us)\\freelancer_project\\Reclaim.Api\\Source\\Source.csproj": {}
+  },
+  "projects": {
+    "F:\\dev\\upwork(us)\\freelancer_project\\Reclaim.Api\\Source\\Source.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\dev\\upwork(us)\\freelancer_project\\Reclaim.Api\\Source\\Source.csproj",
+        "projectName": "Source",
+        "projectPath": "F:\\dev\\upwork(us)\\freelancer_project\\Reclaim.Api\\Source\\Source.csproj",
+        "packagesPath": "C:\\Users\\COM64\\.nuget\\packages\\",
+        "outputPath": "F:\\dev\\upwork(us)\\freelancer_project\\Reclaim.Api\\Source\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\COM64\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows8.0": {
+            "targetAlias": "net8.0-windows8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net8.0-windows8.0": {
+          "targetAlias": "net8.0-windows8.0",
+          "dependencies": {
+            "AsyncStackTraceEx": {
+              "target": "Package",
+              "version": "[1.0.1.1, )",
+              "noWarn": [
+                "NU1701"
+              ]
+            },
+            "Azure.AI.DocumentIntelligence": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Azure.AI.OpenAI": {
+              "target": "Package",
+              "version": "[1.0.0-beta.17, )"
+            },
+            "Azure.Core": {
+              "target": "Package",
+              "version": "[1.44.1, )"
+            },
+            "Azure.Identity": {
+              "target": "Package",
+              "version": "[1.13.1, )"
+            },
+            "Azure.Search.Documents": {
+              "target": "Package",
+              "version": "[11.6.0, )"
+            },
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.23.0, )"
+            },
+            "ErikEJ.EntityFrameworkCore.SqlServer.DateOnlyTimeOnly": {
+              "target": "Package",
+              "version": "[7.0.10, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.68.0, )"
+            },
+            "Lorem.Universal.Net": {
+              "target": "Package",
+              "version": "[4.0.80, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.AspNetCore.Owin": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Proxies": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.Extensions.Caching.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.OpenApi": {
+              "target": "Package",
+              "version": "[1.6.22, )"
+            },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.21.0, )"
+            },
+            "NJsonSchema": {
+              "target": "Package",
+              "version": "[11.0.2, )"
+            },
+            "NSwag.Annotations": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            },
+            "NSwag.AspNetCore": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            },
+            "NSwag.Core": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "OpenAI": {
+              "target": "Package",
+              "version": "[2.1.0-beta.2, )"
+            },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[112.1.0, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.6, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "System.IO.FileSystem": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.Net.Http": {
+              "target": "Package",
+              "version": "[4.3.4, )"
+            },
+            "System.Private.Uri": {
+              "target": "Package",
+              "version": "[4.3.2, )"
+            },
+            "System.Runtime.Caching": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "System.Text.RegularExpressions": {
+              "target": "Package",
+              "version": "[4.3.1, )"
+            },
+            "System.Xml.XPath.XDocument": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "xunit.assert": {
+              "target": "Package",
+              "version": "[2.9.2, )"
+            },
+            "xunit.extensibility.core": {
+              "target": "Package",
+              "version": "[2.9.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.12, 8.0.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.12, 8.0.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.12, 8.0.12]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.12, 8.0.12]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

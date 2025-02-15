@@ -1,0 +1,6 @@
+ 
+INSERT INTO [EmailStatus] ([EmailStatusID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Pending', N'Pending', '2024-04-12 21:48:42', '2024-04-12 21:48:42'
+UNION SELECT 2, N'Delivered', N'Delivered', '2024-04-12 21:48:42', '2024-04-12 21:48:42'
+UNION SELECT 3, N'Failed', N'Failed', '2024-04-12 21:48:42', '2024-04-12 21:48:42'
+UNION SELECT 4, N'Tombstoned', N'Tombstoned', '2024-04-12 21:48:42', '2024-04-12 21:48:42'

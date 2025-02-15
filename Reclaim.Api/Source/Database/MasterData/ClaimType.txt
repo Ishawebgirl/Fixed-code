@@ -1,0 +1,10 @@
+ 
+INSERT INTO [ClaimType] ([ClaimTypeID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Water', N'Water', '2024-10-28 19:40:59', '2024-10-28 19:40:59'
+UNION SELECT 2, N'Fire', N'Fire', '2024-10-28 19:43:35', '2024-10-28 19:43:35'
+UNION SELECT 3, N'Storm', N'Storm', '2024-10-28 19:44:00', '2024-10-28 19:44:00'
+UNION SELECT 4, N'Theft', N'Theft', '2024-10-28 19:44:08', '2024-10-28 19:44:08'
+UNION SELECT 5, N'Vandalism', N'Vandalism', '2024-10-28 19:44:16', '2024-10-28 19:44:16'
+UNION SELECT 6, N'Mold', N'Mold', '2024-10-28 19:44:25', '2024-10-28 19:44:25'
+UNION SELECT 7, N'Hail', N'Hail', '2024-10-28 19:44:28', '2024-10-28 19:44:28'
+UNION SELECT 8, N'Other', N'Other', '2024-10-28 19:44:32', '2024-10-28 19:44:32'

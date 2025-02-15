@@ -1,0 +1,7 @@
+ 
+INSERT INTO [JobStatus] ([JobStatusID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Ready', N'Ready', '2024-04-12 21:47:37', '2024-04-12 21:47:37'
+UNION SELECT 2, N'Running', N'Running', '2024-04-12 21:47:37', '2024-04-12 21:47:37'
+UNION SELECT 3, N'Paused', N'Paused', '2024-04-12 21:47:37', '2024-04-12 21:47:37'
+UNION SELECT 4, N'TimedOut', N'TimedOut', '2024-11-18 17:56:31', '2024-11-18 17:56:31'
+UNION SELECT 5, N'Disabled', N'Disabled', '2024-11-18 19:41:00', '2024-11-18 19:41:00'

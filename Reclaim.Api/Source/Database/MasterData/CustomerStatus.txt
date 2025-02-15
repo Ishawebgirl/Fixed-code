@@ -1,0 +1,5 @@
+ 
+INSERT INTO [CustomerStatus] ([CustomerStatusID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'Active', N'Active', '2024-11-18 19:55:30', '2024-11-18 19:55:30'
+UNION SELECT 2, N'Uncommitted', N'Uncommitted', '2024-11-18 19:55:41', '2024-11-18 19:55:41'
+UNION SELECT 3, N'Terminated', N'Terminated', '2024-11-18 19:55:50', '2024-11-18 19:55:50'

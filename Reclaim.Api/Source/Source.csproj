@@ -1,0 +1,457 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;1570</NoWarn>
+    <DocumentationFile></DocumentationFile>
+    <OutputType>Exe</OutputType>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
+    <Platforms>AnyCPU;ARM64</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>3</WarningLevel>
+    <NoWarn>1701;1702;1591;8601;8602;8603;8604;8618;8629;70001;</NoWarn>
+	<DockerfileRunEnvironmentFiles>docker.env</DockerfileRunEnvironmentFiles>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <WarningLevel>3</WarningLevel>
+    <NoWarn>1701;1702;1591;8601;8602;8603;8604;8618;8629;70001;</NoWarn>
+    <DockerfileRunEnvironmentFiles>docker.env</DockerfileRunEnvironmentFiles>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningLevel>3</WarningLevel>
+    <NoWarn>1701;1702;1591;8601;8602;8603;8604;8618;8629;70001;</NoWarn>
+	 <DockerfileRunEnvironmentFiles>docker.env</DockerfileRunEnvironmentFiles>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <WarningLevel>3</WarningLevel>
+    <NoWarn>1701;1702;1591;8601;8602;8603;8604;8618;8629;70001;</NoWarn>
+    <DockerfileRunEnvironmentFiles>docker.env</DockerfileRunEnvironmentFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\Swagger\Thumbs.db" />
+    <None Remove="Controllers\2pcx5gax.buc~" />
+    <None Remove="favicon.ico" />
+    <None Remove="Reclaim.Api.pdb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Swagger\favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="efpt.config.json.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="AsyncStackTraceEx" Version="1.0.1.1">
+	    <NoWarn>NU1701</NoWarn>
+	</PackageReference>
+	<PackageReference Include="Azure.AI.DocumentIntelligence" Version="1.0.0" />
+	<PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.17" />
+	<PackageReference Include="Azure.Core" Version="1.44.1" />
+	<PackageReference Include="Azure.Identity" Version="1.13.1" />
+	<PackageReference Include="Azure.Search.Documents" Version="11.6.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="ErikEJ.EntityFrameworkCore.SqlServer.DateOnlyTimeOnly" Version="7.0.10" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="itext7" Version="9.0.0" />
+    <PackageReference Include="Lorem.Universal.Net" Version="4.0.80" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.10" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.6.22" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NJsonSchema" Version="11.0.2" />
+    <PackageReference Include="NSwag.Annotations" Version="14.1.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
+    <PackageReference Include="NSwag.Core" Version="14.1.0" />
+    <PackageReference Include="OpenAI" Version="2.1.0-beta.2" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Private.Uri" Version="4.3.2" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <PackageReference Include="System.Xml.XPath.XDocument" Version="4.3.0" />
+    <PackageReference Include="xunit.assert" Version="2.9.2" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CodeTemplates\Enums.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Enums.generated.cs</LastGenOutput>
+    </None>
+    <None Update="CodeTemplates\Settings.tt">
+      <CustomToolNamespace></CustomToolNamespace>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Settings.cs</LastGenOutput>
+    </None>
+    <None Update="Content\Images\Avatars\0159B3F2-1BEB-44DD-8DFA-70F6FBB4951B.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\03F83779-C888-4FEC-8B23-4DF160E52DFE.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\03F86EA8-B1F8-4B11-96AF-C4E9ADDB2FB5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\0741D66C-2FBE-402A-8393-ACD658F6CF95.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\085073B4-1DCD-404D-8EF7-603D5D4A84DB.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\0A8AEEB4-0542-4538-9BC0-832BF0612362.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\0AB15C38-FF42-4F9A-B95C-0B01895DAD2D.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\10BE83AE-8DE7-4AA4-AB3C-91C55C347F2A.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\15587FA5-686A-407B-A2C0-273CA440BE90.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\15653A46-F71A-4AEF-BED1-F670F71DEF16.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\15C1A94C-4BBD-4519-BAE0-B5F740DD6D14.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\196B8CE7-6D29-4754-8A2F-0EFF06AA1A48.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\1C5C8472-8780-4030-BD6C-CA53EADB7DB0.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\1DE9F9E1-A686-4AA0-923F-5760C6FCA285.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\1E7E0BE8-3103-4A29-8913-9C06592780E7.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\25A6ABEE-CF10-46F8-BC54-CAB3FBE229A6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\271E62A0-C6C2-4482-A32E-6EAB691E46BB.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\27F96656-457E-4E13-847B-9E54717510B1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\2F8DD584-FBA8-436C-9E95-C9D16D73EE91.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\31ACE5DA-EE22-449A-8764-CDC6EC736034.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\3329C20E-A560-4AFF-BE39-A75262322F83.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\33E7451F-8F7B-45DF-A611-1FE5490B6D38.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\3BF31762-7D0B-4792-898B-6D854E1ABE07.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\3C13EA14-9F99-412D-8877-040DAFBE474A.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\3D144907-4246-4898-9AEF-3B127A87E8D8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\3E02CBEE-9333-4CF9-8C74-B2755AC97EB2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\3EDEF701-5233-46AB-83ED-3099AFC222E2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\40797D24-B242-4CAB-BD21-456279B08D27.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\40A6DA1D-B841-4FF1-8CB6-F3C236B7EC3F.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\415C143A-A4A7-43E5-BF39-40D321CDE34E.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\4641D519-A991-4E53-B471-2284108BDD03.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\542C7616-06F6-4D7F-A044-0A3CCAFCF5A1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\55B8A258-E7A0-4C3C-ACD3-C0B818F24BDA.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\59DD16D9-AFDB-46C4-91CD-48DFBADCB34C.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\5CC55A88-4460-42D7-8AD3-1B4018A2E2D9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\6323F473-E2E8-46AB-A147-7B43F96B18EC.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\68C186B9-FB63-4968-A120-EF459C067DA5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\69A4CBF0-7D65-4BB1-BCAE-2939CDF62778.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\6BF07AC7-2E85-466D-B85D-1059C5ABB302.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\6DB69516-76FE-4047-A82F-F99FA6B43B0F.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\6E6C3BBA-1384-45F8-9609-C40764F2678C.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\773DA438-CEB2-43D1-A888-0ADB6321E33E.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\78614B64-3268-4ED0-816C-100BF43E513E.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\7E83380E-05C2-4696-9D9D-63F3CA103653.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\80584BDB-1E14-46AD-A56E-7482ED3EA9DD.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\8274C331-0C62-4273-AEF0-C9F0A9B6A288.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\85733316-E020-405E-BC07-3EA60FA04BFD.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\865A409A-DF83-47FB-B4A5-C629D7D86FBC.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\87F2540E-1799-4051-927C-8E6D7870A216.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\8874B042-1F83-482D-BCB9-86021025BDCD.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\888F284D-6E33-4878-8403-60873FC15755.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\8D14B03D-970B-42DF-AE12-E69A1CF1B796.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\8F45390F-0874-4643-8ECF-57D4C151827E.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\8F6D2520-C8AA-432A-A83A-831D52BF7AC3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\927ED79A-FEF3-42AD-BEC6-F35FD5CBAC12.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\92CE2C75-C293-4F5F-84C8-460854455FE5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\932A9D43-8130-431F-A8C6-9730C4AF75E6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9736CD90-9D96-4465-AAF3-679C08BB1F45.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9A92CD31-8FA8-4F37-B29F-70690C704404.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9AFCD5B0-831B-4DE2-A1F2-1C95720310B0.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9B0696B5-749E-44E0-8852-07777DF93879.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9B17383C-27BE-40A4-8A45-912936472D3A.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9E8876B0-69F6-4D71-89EC-25A3A93CBDA9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\9EB7233E-0C98-405B-81AE-D58F20ECFCC6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\A70AE687-0087-4CB2-A107-16EBD0244276.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\AA8E7BE8-8E5B-448B-81B2-AF2EBBE20FEA.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\AB166B56-2409-4DA9-8F80-2D9CE6FBF0F2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\AD771B0B-3E8F-423A-9C98-8EB04CBD4F4A.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\B14A05BA-A87E-4E7A-BCB8-EEFB1A1BD0D4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\B30C3D0A-43E0-4941-BE16-A86858B6AA5D.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\B44E4705-BE1C-4024-8DA4-AB96FEEF6A67.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\B84329B1-F068-44ED-AA9E-1CD61DEADD8B.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\B85BFFA5-5D8F-49F5-90BA-8A4AD783FE5C.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\BA02BA6B-5C93-4033-89D5-6C2C81ED4831.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\BF3314E2-040A-4315-B9A1-6AFBFA5811FA.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\C021A882-4D3D-469A-B633-8B79C68C0C31.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\C0F29136-7977-4418-8BF3-064214F6E137.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\C24EAEEF-A1D3-453A-A66A-8E7166E8F456.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\C726D9E2-817A-408B-A8D2-9FB18D5EF87F.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\CBA092B9-EBF2-4E45-AC15-B3AE4FD9DC7B.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\CE287E3B-1BE1-4920-9263-14639E287AD3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\CFD17ED3-FA48-423F-8C76-0033FC5A90DA.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\CFF48AC4-7551-4D64-9578-292AA5869786.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\D1B8973B-77D6-49AD-B17A-730D7FCB2370.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\D25083F4-0469-4310-B7FD-CBA20ECB3576.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\D44ABD79-B77E-447F-8959-5126687CFEF3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\D5907064-53B3-4406-9340-E903232BD796.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\D96018D7-9744-4397-A341-8A232CAB244E.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\DDFCF2C0-F58C-4EFE-BE39-76334C5668D6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\DF8A2CE4-F2E1-47F7-AD6F-1CB3522993EA.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\E074901E-703E-45D5-B6D7-188DFF30BC3B.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\E3DC6F38-EAEC-4BB9-BD00-3882F0469122.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\E3F33092-6217-4D7D-8697-F0FAAC11F05C.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\E537E593-798D-453C-A06D-A7ECBB249C18.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\E5F6444E-8E84-4DB7-8BF6-0C413ED8BD70.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\E8AA9801-F79B-4F9A-8564-F414AA7375B9.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\EEA47632-71D6-46A2-BD9B-F4F1A54A53D4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\F586A740-06DD-4E60-A13B-FDCF6C0741FA.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\F9E11E71-E3B3-45F1-B62D-49555E98C545.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\FC792A25-A29D-439C-AE35-E5B84E712BF8.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\Avatars\FD0EB847-076B-4A62-8998-D66BEBE3F31E.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Images\pixel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Swagger\custom.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Swagger\custom.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Swagger\description.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Swagger\logo-white-icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\Swagger\logo-white.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CodeTemplates\Enums.generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Enums.tt</DependentUpon>
+    </Compile>
+    <Compile Update="CodeTemplates\Settings.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Database\MasterData\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call &quot;$(MSBuildProjectDirectory)\Database\ExportMasterData.bat&quot;&#xD;&#xA;:call &quot;$(MSBuildProjectDirectory)\Database\ExportSchema.bat&quot;&#xD;&#xA;:ExportSchema is too slow, remember to call after updating schema" />
+  </Target>
+
+</Project>

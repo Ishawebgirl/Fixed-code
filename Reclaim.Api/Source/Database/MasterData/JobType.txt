@@ -1,0 +1,4 @@
+ 
+INSERT INTO [JobType] ([JobTypeID], [Code], [Description], [CreatedTimestamp], [UpdatedTimestamp])
+SELECT 1, N'RunDiagnostics', N'Run diagnostics', '2023-02-21 17:29:28', '2023-02-21 17:29:28'
+UNION SELECT 2, N'DeliverEmail', N'Deliver email', '2023-02-21 17:29:35', '2023-02-21 17:29:35'

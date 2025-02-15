@@ -1,0 +1,12 @@
+node_modules
+.DS_Store
+.vscode
+.vs
+build/static
+build/
+Thumbs.db
+
+*.log
+
+.vscode/*
+build/*
